@@ -1,6 +1,6 @@
 # Story 1.2: Spring Boot Backend Scaffolding
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -41,10 +41,10 @@ So that all subsequent backend work has a consistent foundation.
 
 ### Review Findings
 
-- [ ] [Review][Decision] PaiseUtil uses RoundingMode.HALF_UP instead of throwing on unexpected precision — Using HALF_UP silently rounds fractional paise during conversion. In strict financial contexts, it might be safer to use RoundingMode.UNNECESSARY to catch API input with > 2 decimal places.
-- [ ] [Review][Patch] Encryption via AES/ECB is insecure and keys less than 16 bytes throw errors. [budgetx-backend/src/main/java/com/budgetx/config/EncryptedStringConverter.java]
-- [ ] [Review][Patch] Static KEY in JPA Converter introduces race condition risk [budgetx-backend/src/main/java/com/budgetx/config/EncryptedStringConverter.java]
-- [ ] [Review][Patch] GlobalExceptionHandler leaks unhandled exception message [budgetx-backend/src/main/java/com/budgetx/config/GlobalExceptionHandler.java:20]
+- [x] [Review][Decision] PaiseUtil uses RoundingMode.HALF_UP instead of throwing on unexpected precision — Using HALF_UP silently rounds fractional paise during conversion. In strict financial contexts, it might be safer to use RoundingMode.UNNECESSARY to catch API input with > 2 decimal places.
+- [x] [Review][Patch] Encryption via AES/ECB is insecure and keys less than 16 bytes throw errors. [budgetx-backend/src/main/java/com/budgetx/config/EncryptedStringConverter.java]
+- [x] [Review][Patch] Static KEY in JPA Converter introduces race condition risk [budgetx-backend/src/main/java/com/budgetx/config/EncryptedStringConverter.java]
+- [x] [Review][Patch] GlobalExceptionHandler leaks unhandled exception message [budgetx-backend/src/main/java/com/budgetx/config/GlobalExceptionHandler.java:20]
 - [x] [Review][Defer] Dev version downgrade contradicts spec AC1 [build.gradle.kts] — deferred, pre-existing (waiting for Java 25 release)
 
 ## Dev Notes
