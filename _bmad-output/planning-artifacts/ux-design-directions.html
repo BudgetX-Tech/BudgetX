@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BudgetX — Design Direction Showcase</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: hsl(222, 47%, 6%);
+    --surface-1: hsl(222, 47%, 9%);
+    --surface-2: hsl(222, 47%, 14%);
+    --surface-3: hsl(222, 47%, 12%);
+    --surface-4: hsl(222, 47%, 16%);
+    --primary: hsl(142, 70%, 45%);
+    --primary-fg: hsl(0, 0%, 100%);
+    --secondary: hsl(217, 91%, 60%);
+    --accent: hsl(38, 92%, 50%);
+    --destructive: hsl(0, 84%, 60%);
+    --streak-fire: hsl(15, 90%, 55%);
+    --text: hsl(0, 0%, 95%);
+    --text-muted: hsl(222, 10%, 55%);
+    --border: hsl(222, 15%, 18%);
+    --radius: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ===== SHOWCASE NAV ===== */
+  .showcase-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10, 12, 18, 0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .showcase-nav h1 {
+    font-size: 16px; font-weight: 600;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .showcase-tabs { display: flex; gap: 4px; margin-left: auto; }
+  .showcase-tab {
+    padding: 8px 16px; border-radius: 6px; border: none;
+    background: transparent; color: var(--text-muted);
+    font: 500 13px 'Inter'; cursor: pointer; transition: all 0.2s;
+  }
+  .showcase-tab:hover { color: var(--text); background: var(--surface-2); }
+  .showcase-tab.active { color: var(--primary); background: var(--surface-1); }
+
+  /* ===== SECTIONS ===== */
+  .section {
+    display: none; padding-top: 72px; min-height: 100vh;
+  }
+  .section.active { display: block; }
+  .section-header {
+    padding: 32px 40px 16px;
+  }
+  .section-header h2 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+  .section-header p { color: var(--text-muted); font-size: 14px; max-width: 600px; }
+
+  /* ===== MOCKUP: DASHBOARD ===== */
+  .app-frame {
+    margin: 16px 40px; border-radius: 12px; overflow: hidden;
+    border: 1px solid var(--border); display: flex;
+    height: calc(100vh - 180px); max-height: 720px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 240px; flex-shrink: 0; background: var(--surface-1);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; padding: 16px 0;
+  }
+  .sidebar-identity {
+    padding: 8px 20px 20px; border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--primary); display: flex; align-items: center;
+    justify-content: center; font-weight: 600; font-size: 16px;
+    color: var(--primary-fg); margin-bottom: 8px;
+  }
+  .avatar-name { font-size: 14px; font-weight: 500; }
+  .nav-items { flex: 1; padding: 8px 0; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 20px; font-size: 14px; color: var(--text-muted);
+    cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent;
+  }
+  .nav-item:hover { color: var(--text); background: var(--surface-2); }
+  .nav-item.active {
+    color: var(--primary); background: rgba(34, 197, 94, 0.06);
+    border-left-color: var(--primary);
+  }
+  .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+  .nav-bottom {
+    padding: 12px 20px; border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .nav-bottom .nav-item { padding: 8px 0; opacity: 0.6; border-left: none; }
+
+  /* Main Content */
+  .main-content {
+    flex: 1; padding: 24px; overflow-y: auto; background: var(--bg);
+  }
+  .page-title { font-size: 24px; font-weight: 600; margin-bottom: 20px; }
+
+  /* Dashboard Cards */
+  .cards-row {
+    display: grid; gap: 16px; margin-bottom: 16px;
+  }
+  .cards-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cards-row-2 { grid-template-columns: 3fr 2fr; }
+
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: rgba(34, 197, 94, 0.2); }
+  .card-label {
+    font-size: 12px; font-weight: 500; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+  }
+  .card-value {
+    font-family: 'JetBrains Mono', monospace; font-weight: 500;
+    font-size: 36px; line-height: 1.1;
+  }
+  .card-value.green { color: var(--primary); }
+  .card-sub {
+    font-size: 13px; color: var(--text-muted); margin-top: 6px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .card-sub .up { color: var(--primary); }
+
+  /* Streak card */
+  .streak-value {
+    font-family: 'JetBrains Mono', monospace; font-weight: 500;
+    font-size: 36px; display: flex; align-items: center; gap: 8px;
+  }
+  .fire { font-size: 32px; animation: firePulse 2s infinite; }
+  @keyframes firePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  .shield { font-size: 16px; opacity: 0.7; margin-left: 8px; }
+
+  /* Draft count card */
+  .draft-count {
+    font-family: 'JetBrains Mono', monospace; font-weight: 500;
+    font-size: 36px; color: var(--secondary);
+  }
+
+  /* Donut chart mockup */
+  .donut-container { display: flex; align-items: center; gap: 24px; }
+  .donut-svg { width: 160px; height: 160px; }
+  .donut-legend { flex: 1; }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0; font-size: 13px;
+  }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .legend-amount {
+    margin-left: auto; font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: var(--text-muted);
+  }
+
+  /* Income vs Expense */
+  .bar-pair { margin-bottom: 16px; }
+  .bar-label {
+    display: flex; justify-content: space-between; font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .bar-track {
+    height: 24px; background: var(--surface-2); border-radius: 4px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 4px; transition: width 1s ease-out;
+  }
+  .bar-fill.income { background: var(--primary); }
+  .bar-fill.expense { background: var(--secondary); }
+
+  /* Alert banner */
+  .alert-banner {
+    background: var(--surface-1); border: 1px solid var(--accent);
+    border-radius: var(--radius); padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; color: var(--accent);
+  }
+  .alert-banner button {
+    margin-left: auto; background: var(--accent); color: #000;
+    border: none; padding: 6px 14px; border-radius: 6px;
+    font: 500 13px 'Inter'; cursor: pointer;
+  }
+
+  /* FAB */
+  .fab {
+    position: absolute; bottom: 24px; right: 24px;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--primary); border: none; color: var(--primary-fg);
+    font-size: 24px; cursor: pointer; z-index: 50;
+    box-shadow: 0 4px 24px rgba(34, 197, 94, 0.25);
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fab:hover { transform: scale(1.08); box-shadow: 0 6px 32px rgba(34, 197, 94, 0.35); }
+
+  /* ===== MOCKUP: TRANSACTION DIALOG ===== */
+  .dialog-showcase {
+    padding: 40px; display: flex; justify-content: center; align-items: flex-start;
+    gap: 40px; flex-wrap: wrap;
+  }
+  .dialog-frame {
+    background: var(--surface-3); border: 1px solid var(--border);
+    border-radius: 12px; width: 420px; overflow: hidden;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+  }
+  .dialog-header {
+    padding: 20px 24px 0; display: flex; justify-content: space-between;
+    align-items: center;
+  }
+  .dialog-title { font-size: 18px; font-weight: 600; }
+  .dialog-close {
+    width: 32px; height: 32px; border-radius: 6px; border: none;
+    background: var(--surface-2); color: var(--text-muted);
+    cursor: pointer; font-size: 18px;
+  }
+  .dialog-body { padding: 20px 24px 24px; }
+
+  .field-group { margin-bottom: 16px; }
+  .field-label {
+    font-size: 12px; font-weight: 500; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+  .amount-input {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-4); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 16px;
+  }
+  .amount-prefix {
+    font-family: 'JetBrains Mono', monospace; font-size: 24px;
+    color: var(--text-muted);
+  }
+  .amount-value {
+    font-family: 'JetBrains Mono', monospace; font-size: 32px;
+    font-weight: 500; color: var(--text); background: none; border: none;
+    outline: none; width: 100%;
+  }
+
+  /* Category grid */
+  .category-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  }
+  .category-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 12px 4px; border-radius: var(--radius); cursor: pointer;
+    background: var(--surface-2); border: 2px solid transparent;
+    transition: all 0.15s; font-size: 11px; color: var(--text-muted);
+  }
+  .category-item:hover { border-color: var(--border); color: var(--text); }
+  .category-item.selected {
+    border-color: var(--primary); color: var(--primary);
+    background: rgba(34, 197, 94, 0.08);
+  }
+  .category-icon { font-size: 22px; }
+
+  .more-options {
+    font-size: 13px; color: var(--text-muted); cursor: pointer;
+    padding: 8px 0; display: flex; align-items: center; gap: 4px;
+  }
+  .more-options:hover { color: var(--text); }
+
+  .dialog-actions {
+    display: flex; gap: 12px; margin-top: 20px;
+  }
+  .btn-primary {
+    flex: 1; padding: 12px; border: none; border-radius: var(--radius);
+    background: var(--primary); color: var(--primary-fg);
+    font: 600 14px 'Inter'; cursor: pointer; transition: filter 0.15s;
+  }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-ghost {
+    padding: 12px 20px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: transparent; color: var(--text-muted);
+    font: 500 14px 'Inter'; cursor: pointer;
+  }
+
+  /* ===== MOCKUP: CELEBRATION ===== */
+  .celebration-frame {
+    background: radial-gradient(ellipse at center, hsl(222, 47%, 10%) 0%, var(--bg) 70%);
+    border: 1px solid var(--border); border-radius: 12px;
+    width: 600px; padding: 48px; text-align: center;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+    position: relative; overflow: hidden;
+  }
+  .celebration-badge {
+    font-size: 48px; margin-bottom: 16px;
+    animation: badgeBounce 0.6s ease-out;
+  }
+  @keyframes badgeBounce {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  .celebration-title {
+    font-size: 20px; font-weight: 600; margin-bottom: 32px; color: var(--accent);
+  }
+  .celebration-stat {
+    margin-bottom: 32px;
+  }
+  .celebration-stat-label {
+    font-size: 13px; color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .celebration-stat-value {
+    font-family: 'JetBrains Mono', monospace; font-size: 64px;
+    font-weight: 500; background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .celebration-streak {
+    font-size: 32px; display: flex; align-items: center;
+    justify-content: center; gap: 12px; margin-bottom: 24px;
+  }
+  .celebration-streak .fire { font-size: 36px; }
+  .celebration-streak span {
+    font-family: 'JetBrains Mono', monospace; font-weight: 500;
+  }
+  .celebration-comparison {
+    font-size: 15px; color: var(--text-muted); margin-bottom: 32px;
+    padding: 12px 20px; background: var(--surface-1);
+    border-radius: var(--radius); display: inline-block;
+  }
+  .celebration-comparison .highlight { color: var(--primary); font-weight: 500; }
+  .celebration-actions { display: flex; gap: 12px; justify-content: center; }
+  .btn-celebration {
+    padding: 14px 32px; border-radius: var(--radius); border: none;
+    font: 600 15px 'Inter'; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-celebration.primary { background: var(--primary); color: var(--primary-fg); }
+  .btn-celebration.ghost {
+    background: transparent; color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .btn-celebration.ghost:hover { color: var(--text); }
+
+  /* ===== MOCKUP: TRANSACTION LIST ===== */
+  .txn-list { max-width: 700px; margin: 0 auto; }
+  .txn-section-header {
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 12px 0 8px; border-bottom: 1px solid var(--border);
+    margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+  }
+  .txn-section-header .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .txn-section-header .dot.draft { background: var(--accent); }
+  .txn-section-header .dot.published { background: var(--primary); }
+
+  .txn-card {
+    padding: 14px 16px; border-radius: var(--radius); margin-bottom: 6px;
+    display: flex; align-items: center; gap: 14px; transition: all 0.15s;
+  }
+  .txn-card.draft {
+    background: var(--surface-2); border: 1px dashed var(--border);
+  }
+  .txn-card.published {
+    background: var(--surface-1); border: 1px solid var(--border);
+  }
+  .txn-card:hover { border-color: rgba(34, 197, 94, 0.2); }
+  .txn-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .txn-card.draft .txn-icon { background: var(--surface-3); }
+  .txn-card.published .txn-icon { background: var(--surface-2); }
+  .txn-details { flex: 1; }
+  .txn-name { font-size: 14px; font-weight: 500; }
+  .txn-category { font-size: 12px; color: var(--text-muted); }
+  .txn-amount {
+    font-family: 'JetBrains Mono', monospace; font-size: 15px;
+    font-weight: 500;
+  }
+  .txn-amount.expense { color: var(--secondary); }
+  .txn-amount.income { color: var(--primary); }
+  .txn-date { font-size: 11px; color: var(--text-muted); text-align: right; }
+
+  .week-divider {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 0 8px; color: var(--text-muted); font-size: 12px;
+  }
+  .week-divider::before, .week-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ===== UTILITIES ===== */
+  .relative { position: relative; }
+  .label-tag {
+    position: absolute; top: -10px; left: 16px;
+    background: var(--accent); color: #000; font-size: 11px;
+    font-weight: 600; padding: 2px 10px; border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+  <!-- Showcase Navigation -->
+  <nav class="showcase-nav">
+    <h1>BudgetX Design Directions</h1>
+    <div class="showcase-tabs">
+      <button class="showcase-tab active" onclick="showSection('dashboard')">Dashboard</button>
+      <button class="showcase-tab" onclick="showSection('dialog')">Transaction Dialog</button>
+      <button class="showcase-tab" onclick="showSection('celebration')">Celebration</button>
+      <button class="showcase-tab" onclick="showSection('transactions')">Transaction List</button>
+    </div>
+  </nav>
+
+  <!-- SECTION 1: Dashboard -->
+  <section id="dashboard" class="section active">
+    <div class="section-header">
+      <h2>Dashboard — Dark Finance Premium</h2>
+      <p>Server-rendered with real data. Count-up animations trigger on first session visit. CRED-inspired depth through brightness levels, not shadows.</p>
+    </div>
+    <div class="app-frame relative">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-identity">
+          <div class="avatar">S</div>
+          <div class="avatar-name">Shashwat</div>
+        </div>
+        <div class="nav-items">
+          <div class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </div>
+          <div class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/></svg>
+            Transactions
+          </div>
+          <div class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            Analytics
+          </div>
+          <div class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            Alerts
+          </div>
+          <div class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Friends
+          </div>
+          <div class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            Settings
+          </div>
+        </div>
+        <div class="nav-bottom">
+          <div class="nav-item" style="font-size:13px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Logout
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="page-title">Dashboard</div>
+
+        <!-- Row 1: Stats cards -->
+        <div class="cards-row cards-row-3">
+          <div class="card" style="background: linear-gradient(135deg, var(--surface-1), rgba(34,197,94,0.06));">
+            <div class="card-label">Savings Rate</div>
+            <div class="card-value green" id="savingsRate">0%</div>
+            <div class="card-sub"><span class="up">↑</span> from 35% last month</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Streak</div>
+            <div class="streak-value">
+              <span class="fire">🔥</span>
+              <span id="streakCount">0</span>
+              <span style="font-size:14px;color:var(--text-muted);font-family:Inter;">weeks</span>
+              <span class="shield">🛡️</span>
+            </div>
+            <div class="card-sub">Shield active</div>
+          </div>
+          <div class="card">
+            <div class="card-label">This Week</div>
+            <div class="draft-count" id="draftCount">0</div>
+            <div class="card-sub">transactions logged</div>
+          </div>
+        </div>
+
+        <!-- Row 2: Charts -->
+        <div class="cards-row cards-row-2">
+          <div class="card">
+            <div class="card-label">Category Breakdown — April</div>
+            <div class="donut-container">
+              <svg class="donut-svg" viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.91" fill="none" stroke="var(--surface-2)" stroke-width="4"/>
+                <circle cx="21" cy="21" r="15.91" fill="none" stroke="hsl(217,91%,60%)" stroke-width="4" stroke-dasharray="28 72" stroke-dashoffset="25" class="donut-seg"/>
+                <circle cx="21" cy="21" r="15.91" fill="none" stroke="hsl(142,70%,45%)" stroke-width="4" stroke-dasharray="22 78" stroke-dashoffset="-3" class="donut-seg"/>
+                <circle cx="21" cy="21" r="15.91" fill="none" stroke="hsl(38,92%,50%)" stroke-width="4" stroke-dasharray="18 82" stroke-dashoffset="-25" class="donut-seg"/>
+                <circle cx="21" cy="21" r="15.91" fill="none" stroke="hsl(280,70%,55%)" stroke-width="4" stroke-dasharray="14 86" stroke-dashoffset="-43" class="donut-seg"/>
+                <circle cx="21" cy="21" r="15.91" fill="none" stroke="hsl(180,60%,45%)" stroke-width="4" stroke-dasharray="10 90" stroke-dashoffset="-57" class="donut-seg"/>
+              </svg>
+              <div class="donut-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:hsl(217,91%,60%)"></span> Groceries <span class="legend-amount">₹8,200</span></div>
+                <div class="legend-item"><span class="legend-dot" style="background:hsl(142,70%,45%)"></span> Dining <span class="legend-amount">₹6,400</span></div>
+                <div class="legend-item"><span class="legend-dot" style="background:hsl(38,92%,50%)"></span> Transport <span class="legend-amount">₹5,200</span></div>
+                <div class="legend-item"><span class="legend-dot" style="background:hsl(280,70%,55%)"></span> Shopping <span class="legend-amount">₹4,100</span></div>
+                <div class="legend-item"><span class="legend-dot" style="background:hsl(180,60%,45%)"></span> Utilities <span class="legend-amount">₹2,900</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-label">Income vs Expenses — April</div>
+            <div class="bar-pair">
+              <div class="bar-label">
+                <span style="display:flex;align-items:center;gap:4px;color:var(--primary)">↑ Income</span>
+                <span style="font-family:'JetBrains Mono';font-size:13px;">₹45,000</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill income" style="width:100%"></div></div>
+            </div>
+            <div class="bar-pair">
+              <div class="bar-label">
+                <span style="display:flex;align-items:center;gap:4px;color:var(--secondary)">↓ Expenses</span>
+                <span style="font-family:'JetBrains Mono';font-size:13px;">₹28,400</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill expense" style="width:63%"></div></div>
+            </div>
+            <div style="margin-top:16px;font-size:13px;color:var(--text-muted)">
+              Net savings: <span style="color:var(--primary);font-family:'JetBrains Mono'">₹16,600</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alert banner -->
+        <div class="alert-banner">
+          🔔 Set up spending alerts to get notified when you overspend.
+          <button>Set up →</button>
+        </div>
+      </div>
+
+      <button class="fab">+</button>
+    </div>
+  </section>
+
+  <!-- SECTION 2: Transaction Dialog -->
+  <section id="dialog" class="section">
+    <div class="section-header">
+      <h2>Transaction Dialog — The 10-Second Flow</h2>
+      <p>FAB → Dialog slides up → Amount auto-focused → Category icon grid → Save. Optional fields collapsed by default. 'Log another?' prompt after save.</p>
+    </div>
+    <div class="dialog-showcase">
+      <div class="relative">
+        <span class="label-tag">Step 1: Amount + Category</span>
+        <div class="dialog-frame">
+          <div class="dialog-header">
+            <span class="dialog-title">New Transaction</span>
+            <button class="dialog-close">×</button>
+          </div>
+          <div class="dialog-body">
+            <div class="field-group">
+              <div class="field-label">Amount</div>
+              <div class="amount-input">
+                <span class="amount-prefix">₹</span>
+                <span class="amount-value">450</span>
+              </div>
+            </div>
+            <div class="field-group">
+              <div class="field-label">Category</div>
+              <div class="category-grid">
+                <div class="category-item"><span class="category-icon">🛒</span>Groceries</div>
+                <div class="category-item selected"><span class="category-icon">🍽️</span>Dining</div>
+                <div class="category-item"><span class="category-icon">🚗</span>Transport</div>
+                <div class="category-item"><span class="category-icon">🛍️</span>Shopping</div>
+                <div class="category-item"><span class="category-icon">⚡</span>Utilities</div>
+                <div class="category-item"><span class="category-icon">🎬</span>Entertain</div>
+                <div class="category-item"><span class="category-icon">💊</span>Health</div>
+                <div class="category-item"><span class="category-icon">📚</span>Education</div>
+                <div class="category-item"><span class="category-icon">✈️</span>Travel</div>
+                <div class="category-item"><span class="category-icon">🏠</span>Rent</div>
+                <div class="category-item"><span class="category-icon">📱</span>Subscriptions</div>
+                <div class="category-item"><span class="category-icon">📦</span>Other</div>
+              </div>
+            </div>
+            <div class="more-options">More options ▾</div>
+            <div class="dialog-actions">
+              <button class="btn-primary">Save Transaction</button>
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">⌘+Enter to save</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative">
+        <span class="label-tag">Step 2: After Save</span>
+        <div class="dialog-frame">
+          <div class="dialog-header">
+            <span class="dialog-title">New Transaction</span>
+            <button class="dialog-close">×</button>
+          </div>
+          <div class="dialog-body" style="text-align:center;padding:48px 24px;">
+            <div style="font-size:48px;margin-bottom:16px;">✓</div>
+            <div style="font-size:18px;font-weight:500;margin-bottom:8px;color:var(--primary);">Transaction saved!</div>
+            <div style="font-size:14px;color:var(--text-muted);margin-bottom:24px;">₹450 · Dining</div>
+            <button class="btn-primary" style="width:auto;padding:10px 24px;">Log another?</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: Celebration -->
+  <section id="celebration" class="section">
+    <div class="section-header">
+      <h2>Celebration Overlay — The Weekly Payoff</h2>
+      <p>Full-screen overlay after publish. Savings rate count-up, streak fire animation, comparison text, badge glow. Confetti only on milestones.</p>
+    </div>
+    <div class="dialog-showcase">
+      <div class="relative">
+        <span class="label-tag">Normal Publish (Week 4)</span>
+        <div class="celebration-frame">
+          <div class="celebration-badge">🎉</div>
+          <div class="celebration-title">Week locked in!</div>
+          <div class="celebration-stat">
+            <div class="celebration-stat-label">Savings Rate</div>
+            <div class="celebration-stat-value" id="celebrationRate">0%</div>
+          </div>
+          <div class="celebration-streak">
+            <span class="fire">🔥</span>
+            <span>4 weeks</span>
+          </div>
+          <div class="celebration-comparison">
+            You spent <span class="highlight">12% less</span> on dining this week
+          </div>
+          <div class="celebration-actions">
+            <button class="btn-celebration primary">Done</button>
+            <button class="btn-celebration ghost" title="Coming soon — Phase 2">Share</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative">
+        <span class="label-tag">First Publish (Week 1)</span>
+        <div class="celebration-frame">
+          <div class="celebration-badge">🚀</div>
+          <div class="celebration-title">First publish! Your journey starts now.</div>
+          <div class="celebration-stat">
+            <div class="celebration-stat-label">Savings Rate</div>
+            <div class="celebration-stat-value">38%</div>
+          </div>
+          <div class="celebration-streak">
+            <span class="fire">🔥</span>
+            <span>1 week — here's to many more!</span>
+          </div>
+          <div class="celebration-actions">
+            <button class="btn-celebration primary">Let's go!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: Transaction List -->
+  <section id="transactions" class="section">
+    <div class="section-header">
+      <h2>Transaction List — Drafts Top, Published Below</h2>
+      <p>Draft cards use muted background with dashed borders. Published cards use solid surfaces. Visual week separator groups published transactions.</p>
+    </div>
+    <div style="padding: 0 40px;">
+      <div class="txn-list">
+        <!-- Drafts -->
+        <div class="txn-section-header"><span class="dot draft"></span> Drafts — This Week (5 transactions)</div>
+        <div class="txn-card draft">
+          <div class="txn-icon">🍽️</div>
+          <div class="txn-details">
+            <div class="txn-name">Lunch at Olive Garden</div>
+            <div class="txn-category">Dining</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="txn-amount expense">-₹850</div>
+            <div class="txn-date">Today</div>
+          </div>
+        </div>
+        <div class="txn-card draft">
+          <div class="txn-icon">🛒</div>
+          <div class="txn-details">
+            <div class="txn-name">BigBasket groceries</div>
+            <div class="txn-category">Groceries</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="txn-amount expense">-₹2,340</div>
+            <div class="txn-date">Yesterday</div>
+          </div>
+        </div>
+        <div class="txn-card draft">
+          <div class="txn-icon">🚗</div>
+          <div class="txn-details">
+            <div class="txn-name">Uber to office</div>
+            <div class="txn-category">Transport</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="txn-amount expense">-₹280</div>
+            <div class="txn-date">Yesterday</div>
+          </div>
+        </div>
+        <div class="txn-card draft">
+          <div class="txn-icon">💰</div>
+          <div class="txn-details">
+            <div class="txn-name">Salary credit</div>
+            <div class="txn-category">Income</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="txn-amount income">+₹45,000</div>
+            <div class="txn-date">Apr 1</div>
+          </div>
+        </div>
+        <div class="txn-card draft">
+          <div class="txn-icon">☕</div>
+          <div class="txn-details">
+            <div class="txn-name">Morning coffee</div>
+            <div class="txn-category">Dining</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="txn-amount expense">-₹180</div>
+            <div class="txn-date">Apr 1</div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <button class="btn-primary" style="width:100%;padding:14px;">Publish Week</button>
+        </div>
+
+        <!-- Published -->
+        <div class="week-divider">Published Transactions</div>
+
+        <div class="txn-section-header"><span class="dot published"></span> Week of Mar 24 – Mar 30</div>
+        <div class="txn-card published">
+          <div class="txn-icon">🛒</div>
+          <div class="txn-details">
+            <div class="txn-name">Weekly groceries</div>
+            <div class="txn-category">Groceries</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="txn-amount expense">-₹3,200</div>
+            <div class="txn-date">Mar 29 · 🔒</div>
+          </div>
+        </div>
+        <div class="txn-card published">
+          <div class="txn-icon">⚡</div>
+          <div class="txn-details">
+            <div class="txn-name">Electricity bill</div>
+            <div class="txn-category">Utilities</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="txn-amount expense">-₹1,850</div>
+            <div class="txn-date">Mar 27 · 🔒</div>
+          </div>
+        </div>
+        <div class="txn-card published">
+          <div class="txn-icon">🍽️</div>
+          <div class="txn-details">
+            <div class="txn-name">Team dinner</div>
+            <div class="txn-category">Dining</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="txn-amount expense">-₹1,200</div>
+            <div class="txn-date">Mar 25 · 🔒</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.showcase-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      event.target.classList.add('active');
+      if (id === 'dashboard') animateDashboard();
+      if (id === 'celebration') animateCelebration();
+    }
+
+    function animateCounter(el, target, suffix, duration) {
+      const start = performance.now();
+      const update = (now) => {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(target * eased);
+        el.textContent = current + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+      };
+      requestAnimationFrame(update);
+    }
+
+    function animateDashboard() {
+      animateCounter(document.getElementById('savingsRate'), 38, '%', 600);
+      animateCounter(document.getElementById('streakCount'), 4, '', 400);
+      animateCounter(document.getElementById('draftCount'), 5, '', 300);
+    }
+
+    function animateCelebration() {
+      animateCounter(document.getElementById('celebrationRate'), 38, '%', 800);
+    }
+
+    // Initial animation
+    setTimeout(animateDashboard, 300);
+  </script>
+</body>
+</html>
