@@ -1,0 +1,86 @@
+name: BudgetX CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Cancel in-progress runs for the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-ci:
+    name: Backend CI (Spring Boot)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: budgetx-backend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Upload Build Artifact (JAR)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: budgetx-backend-jar
+          path: budgetx-backend/build/libs/*.jar
+          retention-days: 7
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: budgetx-backend/build/test-results/test/*.xml
+          retention-days: 7
+
+  frontend-ci:
+    name: Frontend CI (Next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: budgetx-dashboard
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: budgetx-dashboard/package-lock.json
+
+      - name: Restore Next.js Build Cache
+        uses: actions/cache@v4
+        with:
+          path: budgetx-dashboard/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('budgetx-dashboard/package-lock.json') }}-${{ hashFiles('budgetx-dashboard/app/**.[jt]s', 'budgetx-dashboard/app/**.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('budgetx-dashboard/package-lock.json') }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check types
+        run: npm run type-check
+
+      - name: Build
+        run: npm run build
