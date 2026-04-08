@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: budgetx-backend
+        working-directory: budgetx-data-service
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,16 +36,16 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: budgetx-backend-jar
-          path: budgetx-backend/build/libs/*.jar
+          name: budgetx-data-service-jar
+          path: budgetx-data-service/build/libs/*.jar
           retention-days: 7
 
       - name: Upload Test Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: backend-test-reports
-          path: budgetx-backend/build/test-results/test/*.xml
+          name: data-service-test-reports
+          path: budgetx-data-service/build/test-results/test/*.xml
           retention-days: 7
 
   frontend-ci:
